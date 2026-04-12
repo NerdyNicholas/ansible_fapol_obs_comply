@@ -1,0 +1,31 @@
+- name: Collect journal warnings/errors
+  ansible.builtin.command: >
+    journalctl -p warning..emerg --since "1 hour ago" --no-pager
+  register: journal_logs
+  changed_when: false
+  failed_when: false
+
+- name: Collect fapolicyd logs
+  ansible.builtin.command: >
+    journalctl -u fapolicyd --since "1 hour ago" --no-pager
+  register: fapolicyd_logs
+  changed_when: false
+  failed_when: false
+
+- name: Get crypto policy
+  ansible.builtin.command: update-crypto-policies --show
+  register: crypto_policy
+  changed_when: false
+
+- name: Get SELinux mode
+  ansible.builtin.command: getenforce
+  register: selinux_mode
+  changed_when: false
+
+- name: Get FIPS state
+  ansible.builtin.slurp:
+    src: /proc/sys/crypto/fips_enabled
+  register: fips_state
+
+- name: Gather services
+  ansible.builtin.service_facts:

@@ -1,0 +1,7 @@
+---
+- import_tasks: precheck.yml
+- import_tasks: fips.yml
+- import_tasks: fapolicyd.yml
+- import_tasks: selinux.yml
+- import_tasks: crypto.yml
+- import_tasks: audit.yml

@@ -1,0 +1,10 @@
+---
+- name: Read kernel FIPS flag
+  ansible.builtin.slurp:
+    src: /proc/sys/crypto/fips_enabled
+  register: fips_state
+
+- name: Assert FIPS enabled
+  ansible.builtin.assert:
+    that:
+      - (fips_state.content | b64decode | trim) == '1'

@@ -1,0 +1,16 @@
+- name: Set golden data
+  ansible.builtin.set_fact:
+    golden_data: "{{ observe_data }}"
+  when: inventory_hostname == golden_host
+
+- name: Share golden data
+  ansible.builtin.set_fact:
+    golden_data: "{{ hostvars[golden_host].observe_data }}"
+  when: inventory_hostname != golden_host
+
+- name: Compute drift safely
+  ansible.builtin.set_fact:
+    drift:
+      crypto: "{{ observe_data.crypto_policy != golden_data.crypto_policy }}"
+      selinux: "{{ observe_data.selinux != golden_data.selinux }}"
+      fips: "{{ observe_data.fips != golden_data.fips }}"

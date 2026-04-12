@@ -1,0 +1,3 @@
+- import_tasks: collect.yml
+- import_tasks: normalize.yml
+- import_tasks: baseline.yml

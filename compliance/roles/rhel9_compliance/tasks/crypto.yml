@@ -1,0 +1,10 @@
+---
+- name: Check crypto policy
+  ansible.builtin.command: update-crypto-policies --show
+  register: crypto_policy
+  changed_when: false
+
+- name: Assert FIPS policy
+  ansible.builtin.assert:
+    that:
+      - crypto_policy.stdout == "FIPS"

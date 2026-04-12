@@ -1,0 +1,10 @@
+---
+- name: Verify fapolicyd installed
+  ansible.builtin.assert:
+    that:
+      - "'fapolicyd' in ansible_facts.packages"
+
+- name: Verify fapolicyd running
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services['fapolicyd.service'].state == 'running'

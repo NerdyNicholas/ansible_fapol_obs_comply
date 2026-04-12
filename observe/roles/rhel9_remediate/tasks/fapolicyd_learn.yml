@@ -1,0 +1,48 @@
+- name: Extract denied lines
+  ansible.builtin.set_fact:
+    deny_lines: "{{ observe_data.fapolicyd | select('search','denied') | list }}"
+
+- name: Extract paths safely
+  ansible.builtin.set_fact:
+    denied_paths: >-
+      {{
+        deny_lines
+        | map('regex_search','path=([^ ]+)')
+        | select('string')
+        | list
+      }}
+
+- name: Filter unsafe paths
+  ansible.builtin.set_fact:
+    safe_paths: >-
+      {{
+        denied_paths
+        | reject('search','^/tmp')
+        | reject('search','^/var/tmp')
+        | reject('search','^/dev/shm')
+        | list
+      }}
+
+- name: Count occurrences safely
+  ansible.builtin.set_fact:
+    path_counts: "{{ path_counts | default({}) | combine({item: (path_counts[item]|default(0)) + 1}) }}"
+  loop: "{{ safe_paths }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Select frequent paths
+  ansible.builtin.set_fact:
+    frequent_paths: >-
+      {{
+        path_counts | dict2items
+        | selectattr('value','>=',fapolicyd_threshold)
+        | map(attribute='key')
+        | list
+      }}
+
+- name: Write candidate rules
+  ansible.builtin.copy:
+    dest: /var/tmp/fapolicyd_candidates.rules
+    content: "{{ frequent_paths | map('regex_replace','^(.*)$','allow perm=execute path=\\1') | join('\n') }}"
+    mode: '0600'
+  when: frequent_paths | length > 0

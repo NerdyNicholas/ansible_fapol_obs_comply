@@ -1,0 +1,10 @@
+---
+- name: Get SELinux mode
+  ansible.builtin.command: getenforce
+  register: selinux_mode
+  changed_when: false
+
+- name: Assert enforcing
+  ansible.builtin.assert:
+    that:
+      - selinux_mode.stdout == "Enforcing"

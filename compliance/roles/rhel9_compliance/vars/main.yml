@@ -1,0 +1,6 @@
+---
+approved_crypto_policy: "FIPS"
+required_services:
+  - fapolicyd
+  - auditd
+secure_umask: "027"

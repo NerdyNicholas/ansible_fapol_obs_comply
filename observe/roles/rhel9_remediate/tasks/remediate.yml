@@ -1,0 +1,12 @@
+- name: Fix crypto drift
+  ansible.builtin.command: >
+    update-crypto-policies --set {{ golden_data.crypto_policy }}
+  when: drift.crypto | bool
+  changed_when: true
+
+- name: Enforce SELinux
+  ansible.builtin.command: setenforce 1
+  when:
+    - drift.selinux | bool
+    - golden_data.selinux == "Enforcing"
+  changed_when: true

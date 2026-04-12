@@ -1,0 +1,9 @@
+- name: Normalize data
+  ansible.builtin.set_fact:
+    observe_data:
+      host: "{{ inventory_hostname }}"
+      crypto_policy: "{{ crypto_policy.stdout | default('unknown') }}"
+      selinux: "{{ selinux_mode.stdout | default('unknown') }}"
+      fips: "{{ (fips_state.content | b64decode | trim) }}"
+      journal: "{{ journal_logs.stdout_lines | default([]) }}"
+      fapolicyd: "{{ fapolicyd_logs.stdout_lines | default([]) }}"

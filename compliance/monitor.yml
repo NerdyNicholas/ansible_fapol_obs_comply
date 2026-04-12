@@ -1,0 +1,11 @@
+---
+- name: Continuous Compliance Monitoring
+  hosts: localhost
+  become: true
+  connection: local
+
+  tasks:
+    - name: Run compliance role
+      include_role:
+        name: rhel9_compliance
+      check_mode: true

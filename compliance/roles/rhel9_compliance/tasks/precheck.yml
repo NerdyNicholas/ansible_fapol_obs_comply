@@ -1,0 +1,6 @@
+---
+- name: Gather service facts
+  ansible.builtin.service_facts:
+
+- name: Gather package facts
+  ansible.builtin.package_facts:

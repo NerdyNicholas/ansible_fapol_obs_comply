@@ -1,0 +1,5 @@
+---
+- name: Verify auditd running
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.services['auditd.service'].state == 'running'

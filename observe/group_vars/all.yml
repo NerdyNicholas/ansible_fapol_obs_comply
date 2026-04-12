@@ -1,0 +1,7 @@
+splunk_hec_url: "https://127.0.0.1:8088/services/collector"
+splunk_hec_token: "CHANGEME"
+splunk_validate_certs: false
+
+golden_host: "localhost"
+
+fapolicyd_threshold: 5
